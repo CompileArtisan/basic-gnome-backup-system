@@ -1,5 +1,20 @@
 #+title: Gnome Backup System
 
+* Table of Contents :toc:
+- [[#backup][Backup]]
+  - [[#system-packages][System Packages]]
+  - [[#snap-packages][Snap Packages]]
+  - [[#flatpaks][Flatpaks]]
+  - [[#gnome-settings-and-customizations][Gnome Settings and Customizations]]
+  - [[#fonts][Fonts]]
+  - [[#terminal][Terminal]]
+- [[#restore][Restore]]
+  - [[#flatpaks-1][Flatpaks]]
+  - [[#snaps][Snaps]]
+  - [[#gnome-settings-and-customizations-1][Gnome Settings and Customizations]]
+  - [[#terminal-1][Terminal]]
+  - [[#emacs][Emacs]]
+
 * Backup
 ** System Packages
 *** Ubuntu
@@ -72,9 +87,73 @@ cp -r .themes ~/
 # Restore kitty config
 mkdir -p ~/.config/kitty
 cp kitty.conf ~/.config/kitty/
-
+# If using zsh with oh-my-zsh
+sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 # Restore zsh config
 cp .zshrc ~/
-# You'll also need to install whatever zsh framework you were using
-# (oh-my-zsh, starship, etc.)
+#+end_src
+** Emacs
+*** Install emacs
+#+begin_src bash :results output raw :wrap src :exports both
+sudo apt install emacs
+#+end_src
+*** Install Dependencies
+#+begin_src bash :results output raw :wrap src :exports both
+sudo apt install ripgrep
+sudo apt install fd-find
+sudo apt install xelatex texlive-full  # For LaTeX support
+sudo apt install zsh                   # If using zsh
+
+#+end_src
+*** LaTeX Setup
+#+begin_src bash :results output raw :wrap src :exports both
+# Install full TeX Live distribution
+sudo apt install texlive-full texlive-xetex
+
+# Or minimal install with required packages
+sudo apt install texlive-latex-base texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-xetex
+#+end_src
+*** Additional Tools
+#+begin_src bash :results output raw :wrap src :exports both
+# Install tree-sitter (if not included with Emacs)
+sudo apt install tree-sitter-cli
+
+# Install language servers for LSP
+# Java
+sudo apt install openjdk-17-jdk
+# JavaScript/TypeScript
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install nodejs
+npm install -g typescript-language-server
+
+# Python
+pip install python-lsp-server
+
+# Web development
+npm install -g vscode-langservers-extracted
+#+end_src
+*** Doom Emacs Installation
+#+begin_src bash :results output raw :wrap src :exports both
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
+export PATH="$HOME/.emacs.d/bin:$PATH"
+~/.emacs.d/bin/doom install
+#+end_src
+#+begin_src bash :results output raw :wrap src :exports both
+# Make PATH permanent (add to ~/.bashrc or ~/.zshrc)
+echo 'export PATH="$HOME/.emacs.d/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+#+end_src
+*** Restore Custom Doom Emacs Configuration
+#+begin_src bash :results output raw :wrap src :exports both
+# Remove default config
+rm -rf ~/.config/doom
+
+# Restore your backed up config
+git clone https://github.com/CompileArtisan/doom-emacs-configuration ~/.config/doom
+
+# Sync your configuration
+~/.emacs.d/bin/doom sync
+
+# Optionally, rebuild everything
+~/.emacs.d/bin/doom build
 #+end_src
