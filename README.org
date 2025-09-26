@@ -1,0 +1,80 @@
+#+title: Gnome Backup System
+
+* Backup
+** System Packages
+*** Ubuntu
+#+begin_src bash :results output raw :wrap src :exports both
+dpkg --get-selections | grep -v deinstall | cut -f1 > package-list.txt
+#+end_src
+** Snap Packages
+#+begin_src bash :results output raw :wrap src :exports both
+snap list > snap-packages.txt
+#+end_src
+** Flatpaks
+#+begin_src bash :results output raw :wrap src :exports both
+flatpak list --app > flatpak-packages.txt
+#+end_src
+** Gnome Settings and Customizations
+#+begin_src bash :results output raw :wrap src :exports both
+dconf dump / > gnome-settings.conf
+cp -r ~/.icons .
+cp -r ~/.themes .
+cp -r ~/.local/share/gnome-shell/extensions .
+
+#+end_src
+** Fonts
+#+begin_src bash :results output raw :wrap src :exports both
+cp -r ~/.local/share/fonts .
+
+#+end_src
+** Terminal
+#+begin_src bash :results output raw :wrap src :exports both
+cp -r ~/.config/kitty/kitty.conf .
+cp ~/.zshrc .
+#+end_src
+
+* Restore
+
+** Flatpaks
+*** Arch
+#+begin_src bash :results output raw :wrap src :exports both
+# Install flatpak first
+sudo pacman -S flatpak
+
+# Add flathub repo
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+#+end_src
+** Snaps
+*** Arch
+#+begin_src bash :results output raw :wrap src :exports both
+# Install snapd
+yay -S snapd  # or use your AUR helper
+sudo systemctl enable --now snapd.socket
+
+# Then install from your list
+#+end_src
+** Gnome Settings and Customizations
+#+begin_src bash :results output raw :wrap src :exports both
+# Restore all your GNOME settings
+dconf load / < gnome-settings.conf
+
+# Install your GNOME extensions
+cp -r extensions ~/.local/share/gnome-shell/
+# Then restart GNOME Shell: Alt+F2, type 'r', press Enter
+
+# Restore themes
+cp -r .themes ~/
+
+#+end_src
+** Terminal
+#+begin_src bash output
+# Restore kitty config
+mkdir -p ~/.config/kitty
+cp kitty.conf ~/.config/kitty/
+
+# Restore zsh config
+cp .zshrc ~/
+# You'll also need to install whatever zsh framework you were using
+# (oh-my-zsh, starship, etc.)
+#+end_src
