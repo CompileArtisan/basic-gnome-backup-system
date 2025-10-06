@@ -8,6 +8,7 @@
   - [[#gnome-settings-and-customizations][Gnome Settings and Customizations]]
   - [[#fonts][Fonts]]
   - [[#terminal][Terminal]]
+  - [[#scripts][Scripts]]
 - [[#restore][Restore]]
   - [[#flatpaks-1][Flatpaks]]
   - [[#snaps][Snaps]]
@@ -47,7 +48,11 @@ cp -r ~/.local/share/fonts .
 cp -r ~/.config/kitty/kitty.conf .
 cp ~/.zshrc .
 #+end_src
-
+** Scripts
+*** Emacs AutoStart
+#+begin_src bash :results output raw :wrap src :exports both
+cp -r ~/.config/autostart ~/.config_backup/autostart
+#+end_src
 * Restore
 
 ** Flatpaks
@@ -156,4 +161,10 @@ git clone https://github.com/CompileArtisan/doom-emacs-configuration ~/.config/d
 
 # Optionally, rebuild everything
 ~/.emacs.d/bin/doom build
+#+end_src
+*** AutoStart
+#+begin_src bash :results output raw :wrap src :exports both
+mkdir -p ~/.config/autostart
+cp -r "$BACKUP_DIR/config/autostart/." ~/.config/autostart/
+
 #+end_src
